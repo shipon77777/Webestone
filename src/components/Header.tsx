@@ -54,16 +54,23 @@ export default function Header() {
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-neon-green rounded-lg flex items-center justify-center text-black font-bold text-xl overflow-hidden relative">
+                        {/* Use standard img tag for external user uploaded logo to avoid Next.js domain config issues unless configured */}
                         {site.logoUrl ? (
-                            <img src={site.logoUrl} alt={site.siteName} className="w-full h-full object-cover" />
+                            <img
+                                src={site.logoUrl}
+                                alt={site.siteName || "Webestone Logo"}
+                                width="40"
+                                height="40"
+                                className="w-full h-full object-cover"
+                            />
                         ) : (
-                            <span className="relative z-10">{site.logoText}</span>
+                            <span className="relative z-10">{site.logoText || "W"}</span>
                         )}
                         {/* Shine effect */}
                         <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     </div>
-                    <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-neon-green">
-                        {site.siteName}
+                    <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-neon-green min-w-[150px]">
+                        {site.siteName || "WeBestOne"}
                     </span>
                 </Link>
 
