@@ -58,9 +58,9 @@ export default async function SitemapHTML() {
                             <h2 className="text-2xl font-bold">Services</h2>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {services.map((service: any) => (
+                            {services.map((service: any, index: number) => (
                                 <Link
-                                    key={service.href}
+                                    key={`${service.href}-${index}`}
                                     href={service.href}
                                     className="p-4 bg-white/5 border border-white/5 rounded-xl hover:border-white/20 hover:bg-white/10 transition-all group"
                                 >
