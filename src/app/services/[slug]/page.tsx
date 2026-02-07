@@ -37,8 +37,39 @@ export default async function DynamicServicePage({ params }: Props) {
         notFound();
     }
 
+    const serviceSchema = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": page.h1,
+        "description": page.metaDescription || page.description,
+        "provider": {
+            "@type": "Organization",
+            "name": "WeBestOne",
+            "url": "https://webestone.com"
+        },
+        "areaServed": "Worldwide",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Digital Services",
+            "itemListElement": [
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": page.h1Highlight || slug
+                    }
+                }
+            ]
+        }
+    };
+
     return (
         <main className="relative min-h-screen text-white pt-20 overflow-hidden bg-black">
+            {/* Schema Markup */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+            />
             {/* Background Effects */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-green/5 rounded-full blur-[150px]" />
