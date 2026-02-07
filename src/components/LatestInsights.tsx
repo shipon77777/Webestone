@@ -5,28 +5,35 @@ import { ArrowRight, MoveUpRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-const articles = [
+const staticArticles = [
     {
+        id: "1",
         date: "April 16, 2024",
         title: "Unlocking the Potential of AI in Business Success",
-        image: "/images/blog1.jpg", // Placeholder - will use fallback
+        image: "from-purple-900/50 to-blue-900/50",
         category: "AI & Tech",
     },
     {
+        id: "2",
         date: "April 18, 2024",
         title: "Strategies for Building a Successful Distributed Team",
-        image: "/images/blog2.jpg",
+        image: "from-emerald-900/50 to-teal-900/50",
         category: "Management",
     },
     {
+        id: "3",
         date: "April 20, 2024",
         title: "Empowering Citizen Developers and Accelerating Innovation",
-        image: "/images/blog3.jpg",
+        image: "from-orange-900/50 to-red-900/50",
         category: "Development",
     },
 ];
 
-export default function LatestInsights() {
+export default function LatestInsights({ initialPosts }: { initialPosts?: any[] }) {
+    const displayPosts = initialPosts && initialPosts.length > 0
+        ? initialPosts.slice(0, 3)
+        : staticArticles;
+
     return (
         <section className="py-24 px-6 relative z-10 bg-background/50">
             <div className="max-w-7xl mx-auto space-y-12">
@@ -47,9 +54,9 @@ export default function LatestInsights() {
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {articles.map((article, index) => (
+                    {displayPosts.map((article, index) => (
                         <motion.article
-                            key={index}
+                            key={article.id || index}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             whileHover={{ y: -10 }}
@@ -57,29 +64,36 @@ export default function LatestInsights() {
                             viewport={{ once: true }}
                             className="group cursor-pointer space-y-4"
                         >
-                            {/* Image Container */}
-                            <div className="aspect-[4/3] w-full rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 relative">
-                                {/* Gradient Fallback since we don't have real images */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${index === 0 ? 'from-purple-900/50 to-blue-900/50' : index === 1 ? 'from-emerald-900/50 to-teal-900/50' : 'from-orange-900/50 to-red-900/50'} group-hover:scale-105 transition-transform duration-700`}></div>
+                            <Link href={`/blogs/${article.id}`} className="block space-y-4">
+                                {/* Image Container */}
+                                <div className="aspect-[4/3] w-full rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 relative">
+                                    <div className="absolute inset-0 group-hover:scale-105 transition-transform duration-700">
+                                        {article.image?.includes('from-') ? (
+                                            <div className={`w-full h-full bg-gradient-to-br ${article.image}`}></div>
+                                        ) : (
+                                            <img src={article.image} alt="" className="w-full h-full object-cover" />
+                                        )}
+                                    </div>
 
-                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
 
-                                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs font-medium text-white border border-white/10">
-                                    {article.category}
+                                    <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs font-medium text-white border border-white/10">
+                                        {article.category}
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Content */}
-                            <div className="space-y-2">
-                                <div className="text-xs text-neutral-500 font-medium">{article.date}</div>
-                                <h3 className="text-xl font-bold text-white group-hover:text-neon-green transition-colors leading-snug">
-                                    {article.title}
-                                </h3>
-                                <div className="pt-2 flex items-center text-sm font-medium text-neutral-400 group-hover:text-white transition-colors">
-                                    <span>Read More</span>
-                                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                {/* Content */}
+                                <div className="space-y-2">
+                                    <div className="text-xs text-neutral-500 font-medium">{article.date}</div>
+                                    <h3 className="text-xl font-bold text-white group-hover:text-neon-green transition-colors leading-snug">
+                                        {article.title}
+                                    </h3>
+                                    <div className="pt-2 flex items-center text-sm font-medium text-neutral-400 group-hover:text-white transition-colors">
+                                        <span>Read More</span>
+                                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </motion.article>
                     ))}
                 </div>

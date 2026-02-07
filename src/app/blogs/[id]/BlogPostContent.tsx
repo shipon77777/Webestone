@@ -54,7 +54,13 @@ export default function BlogPostContent({ post }: { post: BlogPost }) {
             {/* 2. Hero Section */}
             <header className="relative w-full h-[60vh] md:h-[70vh] flex items-end justify-center pb-20 overflow-hidden">
                 {/* Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${post.image} opacity-30`}></div>
+                <div className="absolute inset-0 opacity-30">
+                    {post.image?.includes('from-') ? (
+                        <div className={`w-full h-full bg-gradient-to-br ${post.image}`}></div>
+                    ) : (
+                        <img src={post.image} alt="" className="w-full h-full object-cover" />
+                    )}
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
 
                 {/* Texture */}

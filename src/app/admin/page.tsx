@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getData, saveData, uploadFile } from "@/actions/admin";
-import { Save, Plus, Trash, Edit, Upload } from "lucide-react";
+import { getData, saveData, uploadFile, getBlogPosts, saveBlogPost, deleteBlogPost, updateBlogPost } from "@/actions/admin";
+import { Save, Plus, Trash, Edit, Upload, FileText, X } from "lucide-react";
 
 import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInAnonymously, signOut, onAuthStateChanged } from "firebase/auth";
@@ -21,6 +21,12 @@ export default function AdminPage() {
     const [site, setSite] = useState<any>({});
     const [servicePages, setServicePages] = useState<any>({});
     const [selectedServiceSlug, setSelectedServiceSlug] = useState("");
+
+    // Blog States
+    const [blogPosts, setBlogPosts] = useState<any[]>([]);
+    const [editingPost, setEditingPost] = useState<any>(null);
+    const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
 
@@ -77,6 +83,8 @@ export default function AdminPage() {
         const soc = await getData("socials.json");
         const si = await getData("site.json");
         const sp = await getData("service-pages.json");
+        const bp = await getBlogPosts();
+
         if (s) {
             setServices(s);
             if (s.length > 0) {
@@ -89,10 +97,47 @@ export default function AdminPage() {
         if (soc) setSocials(soc);
         if (si) setSite(si);
         if (sp) setServicePages(sp);
+        if (bp) setBlogPosts(bp);
         setLoading(false);
     };
 
+    const handleSaveBlogPost = async (post: any) => {
+        if (post.id) {
+            // Update
+            const { id, ...data } = post;
+            const res = await updateBlogPost(id, data);
+            if (res.success) {
+                alert("Blog post updated!");
+                setIsBlogModalOpen(false);
+                setEditingPost(null);
+                fetchData(); // Refresh list
+            } else {
+                alert("Failed to update post: " + res.error);
+            }
+        } else {
+            // Create
+            const res = await saveBlogPost(post);
+            if (res.success) {
+                alert("Blog post created!");
+                setIsBlogModalOpen(false);
+                setEditingPost(null);
+                fetchData(); // Refresh list
+            } else {
+                alert("Failed to create post: " + res.error);
+            }
+        }
+    };
 
+    const handleDeleteBlog = async (id: string) => {
+        if (confirm("Are you sure you want to delete this post?")) {
+            const res = await deleteBlogPost(id);
+            if (res.success) {
+                setBlogPosts(blogPosts.filter(p => p.id !== id));
+            } else {
+                alert("Failed to delete post");
+            }
+        }
+    };
 
     const handleSaveServices = async () => {
         await saveData("services.json", services);
@@ -131,6 +176,24 @@ export default function AdminPage() {
         if (result.success) {
             setSite({ ...site, logoUrl: result.url });
             alert("Logo uploaded! Click 'Save General Settings' to apply.");
+        } else {
+            alert("Upload failed: " + result.error);
+        }
+        setUploading(false);
+    };
+
+    const handleBlogImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !editingPost) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const result = await uploadFile(formData);
+        if (result.success) {
+            setEditingPost({ ...editingPost, image: result.url });
+            alert("Image uploaded!");
         } else {
             alert("Upload failed: " + result.error);
         }
@@ -220,6 +283,7 @@ export default function AdminPage() {
             <div className="flex gap-4 mb-8 border-b border-white/10 pb-4 overflow-x-auto">
                 <button onClick={() => setActiveTab("general")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "general" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>General</button>
                 <button onClick={() => setActiveTab("services")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "services" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Service List</button>
+                <button onClick={() => setActiveTab("blog")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "blog" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Blog</button>
                 <button onClick={() => setActiveTab("seo")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "seo" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Service Pages (SEO)</button>
                 <button onClick={() => setActiveTab("video")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "video" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Video</button>
                 <button onClick={() => setActiveTab("socials")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "socials" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Socials</button>
@@ -481,6 +545,132 @@ export default function AdminPage() {
                         ))}
                     </div>
                     <button onClick={handleSaveSocials} className="flex items-center gap-2 bg-neon-green text-black font-bold px-6 py-3 rounded hover:bg-green-400"><Save size={20} /> Save Socials</button>
+                </div>
+            )}
+
+            {/* Blog Tab */}
+            {activeTab === "blog" && (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold">Manage Blog Posts</h2>
+                        <button onClick={() => { setEditingPost({ title: "", excerpt: "", content: "", category: "AI & Tech", readTime: "5 min read", image: "from-blue-500 to-purple-500", date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }); setIsBlogModalOpen(true); }} className="flex items-center gap-2 bg-neon-green text-black px-4 py-2 rounded hover:bg-green-400 font-bold"><Plus size={16} /> New Post</button>
+                    </div>
+
+                    <div className="grid gap-4">
+                        {blogPosts.map((post) => (
+                            <div key={post.id} className="bg-neutral-900 p-6 rounded-xl border border-white/10 flex justify-between items-center">
+                                <div>
+                                    <h3 className="font-bold text-lg text-white">{post.title}</h3>
+                                    <div className="text-sm text-neutral-400 flex gap-4 mt-1">
+                                        <span>{post.date}</span>
+                                        <span className="px-2 py-0.5 bg-white/10 rounded text-xs">{post.category}</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={() => { setEditingPost(post); setIsBlogModalOpen(true); }} className="p-2 bg-blue-600/20 text-blue-400 rounded hover:bg-blue-600/30 transition-colors"><Edit size={16} /></button>
+                                    <button onClick={() => handleDeleteBlog(post.id)} className="p-2 bg-red-600/20 text-red-500 rounded hover:bg-red-600/30 transition-colors"><Trash size={16} /></button>
+                                </div>
+                            </div>
+                        ))}
+                        {blogPosts.length === 0 && <div className="text-neutral-500 text-center py-10">No blog posts found.</div>}
+                    </div>
+                </div>
+            )}
+
+            {/* Blog Edit Modal */}
+            {isBlogModalOpen && editingPost && (
+                <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-neutral-900 border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col">
+                        <div className="p-6 border-b border-white/10 flex justify-between items-center sticky top-0 bg-neutral-900 z-10">
+                            <h3 className="text-xl font-bold text-white">{editingPost.id ? "Edit Post" : "New Post"}</h3>
+                            <button onClick={() => setIsBlogModalOpen(false)} className="text-neutral-400 hover:text-white"><X size={24} /></button>
+                        </div>
+
+                        <div className="p-6 space-y-6 flex-1 overflow-y-auto">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm text-neutral-400 mb-1">Title</label>
+                                    <input value={editingPost.title} onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none text-white" placeholder="Post Title" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-neutral-400 mb-1">ID (Auto-generated)</label>
+                                    <input value={editingPost.id || "New"} disabled className="w-full bg-neutral-800 border border-white/10 p-3 rounded text-neutral-500 cursor-not-allowed" />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-sm text-neutral-400 mb-1">Excerpt</label>
+                                    <textarea value={editingPost.excerpt} onChange={(e) => setEditingPost({ ...editingPost, excerpt: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none h-20 text-white" placeholder="Short summary..." />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm text-neutral-400 mb-1">Category</label>
+                                    <select value={editingPost.category} onChange={(e) => setEditingPost({ ...editingPost, category: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none text-white">
+                                        {["AI & Tech", "Design", "Development", "Marketing", "Business", "General"].map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-neutral-400 mb-1">Read Time</label>
+                                    <input value={editingPost.readTime} onChange={(e) => setEditingPost({ ...editingPost, readTime: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none text-white" placeholder="e.g. 5 min read" />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm text-neutral-400 mb-1">Date</label>
+                                    <input type="text" value={editingPost.date} onChange={(e) => setEditingPost({ ...editingPost, date: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none text-white" placeholder="May 15, 2024" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-neutral-400 mb-1">Author</label>
+                                    <input value={editingPost.author || ""} onChange={(e) => setEditingPost({ ...editingPost, author: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none text-white" placeholder="Author Name" />
+                                </div>
+
+                                <div className="col-span-2 space-y-2">
+                                    <label className="block text-sm text-neutral-400">Featured Image (URL or Upload)</label>
+                                    <div className="flex flex-col md:flex-row gap-4">
+                                        <input
+                                            value={editingPost.image}
+                                            onChange={(e) => setEditingPost({ ...editingPost, image: e.target.value })}
+                                            className="flex-1 bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none text-white text-sm"
+                                            placeholder="e.g. /uploads/image.png or from-blue-500 to-purple-500"
+                                        />
+                                        <label className="cursor-pointer bg-white/10 hover:bg-white/20 border border-white/10 py-3 px-6 rounded-lg text-center transition-colors whitespace-nowrap flex items-center gap-2">
+                                            <Upload size={16} />
+                                            <span className="text-sm font-medium">{uploading ? "Uploading..." : "Upload Image"}</span>
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleBlogImageUpload} disabled={uploading} />
+                                        </label>
+                                    </div>
+                                    {editingPost.image && !editingPost.image.includes(' ') && (
+                                        <div className="mt-2 h-32 w-full rounded-lg overflow-hidden border border-white/10 bg-black flex items-center justify-center">
+                                            {editingPost.image.startsWith('from-') ? (
+                                                <div className={`w-full h-full bg-gradient-to-br ${editingPost.image}`}></div>
+                                            ) : (
+                                                <img src={editingPost.image} alt="Preview" className="h-full w-full object-cover" />
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="col-span-2">
+                                    <div className="flex justify-between items-end mb-2">
+                                        <div>
+                                            <label className="block text-sm text-neutral-400 mb-1">Content (HTML Supported)</label>
+                                            <p className="text-xs text-neutral-500">Use standard HTML tags for layout.</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => setEditingPost({ ...editingPost, content: editingPost.content + "<h2>Subtitle</h2>\n" })} className="text-[10px] px-2 py-1 bg-white/5 rounded hover:bg-white/10 border border-white/10">H2</button>
+                                            <button onClick={() => setEditingPost({ ...editingPost, content: editingPost.content + "<p>Paragraph text...</p>\n" })} className="text-[10px] px-2 py-1 bg-white/5 rounded hover:bg-white/10 border border-white/10">Para</button>
+                                            <button onClick={() => setEditingPost({ ...editingPost, content: editingPost.content + "<strong>Bold Text</strong>" })} className="text-[10px] px-2 py-1 bg-white/5 rounded hover:bg-white/10 border border-white/10">Bold</button>
+                                            <button onClick={() => setEditingPost({ ...editingPost, content: editingPost.content + "<ul>\n  <li>Item 1</li>\n</ul>\n" })} className="text-[10px] px-2 py-1 bg-white/5 rounded hover:bg-white/10 border border-white/10">List</button>
+                                        </div>
+                                    </div>
+                                    <textarea value={editingPost.content} onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })} className="w-full bg-black border border-white/20 p-3 rounded focus:border-neon-green outline-none h-80 font-mono text-sm text-white" placeholder="<p>Write your content here...</p>" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6 border-t border-white/10 flex justify-end gap-4 sticky bottom-0 bg-neutral-900 z-10">
+                            <button onClick={() => setIsBlogModalOpen(false)} className="px-6 py-2 rounded hover:bg-white/5 transition-colors text-white">Cancel</button>
+                            <button onClick={() => handleSaveBlogPost(editingPost)} className="px-6 py-2 bg-neon-green text-black font-bold rounded hover:bg-green-400 transition-colors">Save Post</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

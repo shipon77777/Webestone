@@ -4,11 +4,12 @@ import WhyChooseUs from "@/components/WhyChooseUs";
 import OurPromises from "@/components/OurPromises";
 import LatestInsights from "@/components/LatestInsights";
 import VideoSection from "@/components/VideoSection";
-import { getData } from "@/actions/admin";
+import { getData, getBlogPosts } from "@/actions/admin";
 
 export default async function Home() {
   const services = await getData("services.json") || [];
   const video = await getData("video.json") || { headline: "Experience the Future", subheadline: "Showreel", youtubeUrl: "" };
+  const blogPosts = await getBlogPosts();
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-between">
@@ -20,7 +21,7 @@ export default async function Home() {
         <WhyChooseUs />
         <OurPromises />
         <VideoSection initialVideo={video} />
-        <LatestInsights />
+        <LatestInsights initialPosts={blogPosts as any} />
       </div>
     </main>
   );
