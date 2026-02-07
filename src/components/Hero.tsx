@@ -34,7 +34,8 @@ export default function Hero() {
                 <motion.div
                     variants={container}
                     initial="hidden"
-                    animate="show"
+                    whileInView="show"
+                    viewport={{ once: true }}
                     className="space-y-8"
                 >
                     <motion.div variants={item} className="flex items-center gap-2">
@@ -78,8 +79,9 @@ export default function Hero() {
                 {/* Right: Visual Placeholder */}
                 <motion.div
                     initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                    viewport={{ once: true }}
                     className="relative h-[400px] md:h-[600px] w-full flex items-center justify-center perspective-[1000px]"
                 >
                     {/* Abstract Background Glow */}
