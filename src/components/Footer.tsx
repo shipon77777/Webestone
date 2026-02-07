@@ -7,15 +7,15 @@ import { getData } from "@/actions/admin";
 
 export default function Footer() {
     const services = [
-        "AI SEO Services",
-        "GEO Services",
-        "AEO Services",
-        "Social Media Management",
-        "Digital Marketing",
-        "WordPress Development",
-        "Website Design",
-        "Paid Promotions",
-        "Video Productions",
+        { name: "Digital Marketing", href: "/services/digital-marketing" },
+        { name: "SEO Services", href: "/services/seo" },
+        { name: "Social Media Management", href: "/services/social-media-marketing" },
+        { name: "PPC Advertising", href: "/services/ppc" },
+        { name: "Web Development", href: "/services/web-development" },
+        { name: "UI/UX Design", href: "/services/ui-ux-design" },
+        { name: "Video Editing", href: "/services/video-editing" },
+        { name: "Motion Graphics", href: "/services/motion-graphics" },
+        { name: "AI Solutions", href: "/services/ai-solutions" },
     ];
 
     const [socials, setSocials] = useState<any>({
@@ -91,8 +91,8 @@ export default function Footer() {
                         <ul className="space-y-3">
                             {services.map((service, index) => (
                                 <li key={index}>
-                                    <Link href="#" className="hover:text-neon-green transition-colors text-sm">
-                                        {service}
+                                    <Link href={service.href} className="hover:text-neon-green transition-colors text-sm">
+                                        {service.name}
                                     </Link>
                                 </li>
                             ))}

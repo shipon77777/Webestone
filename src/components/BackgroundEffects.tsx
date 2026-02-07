@@ -1,8 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { preload } from "react-dom";
 
 export default function BackgroundEffects() {
+  preload("https://grainy-gradients.vercel.app/noise.svg", { as: "image" });
+
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
       {/* Deep charcoal background is set in globals.css, this is for accents */}

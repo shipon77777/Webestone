@@ -226,9 +226,9 @@ export default function AdminPage() {
                             onChange={(e) => setSelectedServiceSlug(e.target.value)}
                             className="bg-neutral-900 border border-white/20 p-3 rounded-lg text-white w-full md:w-64"
                         >
-                            {services.map(s => {
+                            {services.map((s, i) => {
                                 const slug = s.href.split('/').pop() || "";
-                                return <option key={slug} value={slug}>{s.title}</option>;
+                                return <option key={s.id || i} value={slug}>{s.title}</option>;
                             })}
                         </select>
                     </div>
