@@ -11,6 +11,22 @@ import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 
+const heroContainer = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.3,
+        },
+    },
+};
+
+const heroItem = {
+    hidden: { y: 20, opacity: 0 },
+    show: { y: 0, opacity: 1, transition: { type: "spring" as const, stiffness: 50, damping: 20 } },
+};
+
 const servicesGrid = [
     { title: "Search Engine Optimization (SEO)", desc: "Combine AI-powered automation with white hat SEO practices to ensure your brand remains visible in AI search results.", icon: Search },
     { title: "Franchise SEO", desc: "Amplify market reach and improve your AI visibility with Thrive's franchise SEO services. AI-driven insights ensure corporate and individual franchise prominence.", icon: Globe },
@@ -82,38 +98,62 @@ export default function DigitalMarketingServices() {
 
             {/* --- Hero Section --- */}
             <section className="relative py-20 px-6 z-10">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <motion.div
+                    variants={heroContainer}
+                    initial="hidden"
+                    animate="show"
+                    className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+                >
                     <div className="space-y-6">
-                        <div className="inline-block px-4 py-2 bg-purple-600/20 text-purple-400 rounded-full text-sm font-bold border border-purple-500/30 uppercase tracking-wide">
+                        <motion.div variants={heroItem} className="inline-block px-4 py-2 bg-purple-600/20 text-purple-400 rounded-full text-sm font-bold border border-purple-500/30 uppercase tracking-wide">
                             Digital Marketing Services
-                        </div>
-                        <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                        </motion.div>
+                        <motion.h1 variants={heroItem} className="text-4xl md:text-6xl font-bold leading-tight">
                             Your digital dreams are just <br />
                             <span className="text-neon-green">one team away...</span>
-                        </h1>
-                        <p className="text-neutral-400 text-lg leading-relaxed max-w-lg">
+                        </motion.h1>
+                        <motion.p variants={heroItem} className="text-neutral-400 text-lg leading-relaxed max-w-lg">
                             Digital marketing is a vast landscape, but our agency of techie wizards has combined decades of experience and a deep understanding of how to make your business grow. We’re here to help with every marketing channel, be it Facebook, NextDoor, or anything in between.
-                        </p>
-                        <MagneticButton className="px-8 py-3 bg-neon-green text-black font-bold rounded-full shadow-[0_0_20px_rgba(0,255,157,0.3)] hover:shadow-[0_0_30px_rgba(0,255,157,0.5)] transition-shadow">
-                            Get In Touch
-                        </MagneticButton>
+                        </motion.p>
+                        <motion.div variants={heroItem}>
+                            <MagneticButton className="px-8 py-3 bg-neon-green text-black font-bold rounded-full shadow-[0_0_20px_rgba(0,255,157,0.3)] hover:shadow-[0_0_30px_rgba(0,255,157,0.5)] transition-shadow">
+                                Get In Touch
+                            </MagneticButton>
+                        </motion.div>
                     </div>
 
-                    <div className="relative group">
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+                        className="relative group"
+                    >
                         {/* Video Placeholder */}
-                        <div className="relative rounded-3xl overflow-hidden aspect-video bg-neutral-900 border border-white/10 shadow-2xl">
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.3 }}
+                            className="relative rounded-3xl overflow-hidden aspect-video bg-neutral-900 border border-white/10 shadow-2xl"
+                        >
                             <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors cursor-pointer">
-                                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
+                                <motion.div
+                                    whileHover={{ scale: 1.1 }}
+                                    className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 transition-transform"
+                                >
                                     <Play className="w-6 h-6 text-white fill-current ml-1" />
-                                </div>
+                                </motion.div>
                             </div>
                             {/* Placeholder Image Overlay (Simulated) */}
                             <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-neutral-800 to-neutral-700"></div>
-                        </div>
+                        </motion.div>
                         {/* Decorative Elements */}
-                        <div className="absolute -z-10 -bottom-4 -right-4 w-full h-full border border-neon-green/20 rounded-3xl"></div>
-                    </div>
-                </div>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.8 }}
+                            className="absolute -z-10 -bottom-4 -right-4 w-full h-full border border-neon-green/20 rounded-3xl"
+                        ></motion.div>
+                    </motion.div>
+                </motion.div>
             </section>
 
             {/* --- Why Use Digital Marketing --- */}
