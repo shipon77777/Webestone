@@ -42,7 +42,7 @@ export default function OurPromises() {
                     <span className="text-neon-green font-mono text-sm tracking-widest uppercase block mb-4">Workflow</span>
                     <h2 className="text-4xl md:text-5xl font-bold text-white relative inline-block">
                         Our promises to every client.
-                        <svg className="absolute w-full h-3 -bottom-2 text-neon-green/50 left-0" viewBox="0 0 200 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.00025 6.99996C18.4475 2.66663 80.9167 -2.49997 197.99 1.99996" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg>
+                        <svg className="absolute w-full h-3 -bottom-2 text-neon-green/50 left-0" viewBox="0 0 200 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.00025 6.99996C18.4475 2.66663 80.9167 -2.49997 197.99 1.99996" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
                     </h2>
                 </motion.div>
 

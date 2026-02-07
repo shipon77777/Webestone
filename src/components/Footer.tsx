@@ -63,9 +63,24 @@ export default function Footer() {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <h3 className="text-white font-bold text-lg">Location</h3>
-                            <p className="text-neutral-400">Dhaka, Bangladesh</p>
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="text-white font-bold text-lg">Location</h3>
+                                <p className="text-neutral-400">Dhaka, Bangladesh</p>
+                            </div>
+                            {/* Mini Map */}
+                            <div className="relative group/map overflow-hidden rounded-2xl h-40 w-full border border-white/5 bg-neutral-900 shadow-2xl">
+                                <div className="absolute inset-0 bg-black/60 group-hover/map:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d233667.8223908687!2d90.279237!3d23.7808875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087021c81%3A0x629533f81156637e!2sDhaka!5e0!3m2!1sen!2sbd!4v1707292200000!5m2!1sen!2sbd"
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0, filter: 'grayscale(100%) invert(90%) hue-rotate(180deg)' }}
+                                    className="group-hover/map:filter-none transition-all duration-700 scale-110 group-hover/map:scale-100"
+                                    loading="lazy"
+                                ></iframe>
+                                <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none z-20"></div>
+                            </div>
                         </div>
                     </div>
 
