@@ -121,11 +121,11 @@ export default function Footer() {
                         <div className="space-y-6">
                             <h3 className="text-white font-bold text-lg">Get in Touch</h3>
                             <div className="flex items-center gap-4">
-                                <a href={socials.facebook} className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 hover:scale-110 transition-transform"><Facebook className="w-5 h-5 fill-current" /></a>
-                                <a href={socials.instagram} className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Instagram className="w-5 h-5" /></a>
-                                <a href={socials.whatsapp} className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><MessageCircle className="w-5 h-5 fill-current" /></a>
-                                <a href={socials.linkedin} className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Linkedin className="w-5 h-5 fill-current" /></a>
-                                <a href={socials.youtube} className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Youtube className="w-5 h-5 fill-current" /></a>
+                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 hover:scale-110 transition-transform"><Facebook className="w-5 h-5 fill-current" /></a>
+                                <a href={socials.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Instagram className="w-5 h-5" /></a>
+                                <a href={socials.whatsapp.startsWith('http') ? socials.whatsapp : `https://wa.me/${socials.whatsapp}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><MessageCircle className="w-5 h-5 fill-current" /></a>
+                                <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Linkedin className="w-5 h-5 fill-current" /></a>
+                                <a href={socials.youtube} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Youtube className="w-5 h-5 fill-current" /></a>
                             </div>
                         </div>
 
