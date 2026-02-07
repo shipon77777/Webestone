@@ -6,6 +6,9 @@ import path from 'path';
 const DATA_DIR = path.join(process.cwd(), 'src/data');
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
 
+import { db } from "@/lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 export async function uploadFile(formData: FormData) {
     try {
         const file = formData.get('file') as File;
@@ -33,22 +36,39 @@ export async function uploadFile(formData: FormData) {
 
 export async function getData(filename: string) {
     try {
-        const filePath = path.join(DATA_DIR, filename);
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(fileContent);
+        // Remove extension to get doc ID
+        const docId = filename.replace('.json', '');
+        const docRef = doc(db, "content", docId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data().data;
+        } else {
+            // Fallback to local file if not in DB yet (migration helper)
+            console.log(`Document ${docId} not found in DB, falling back to local file.`);
+            try {
+                const filePath = path.join(DATA_DIR, filename);
+                const fileContent = await fs.readFile(filePath, 'utf-8');
+                return JSON.parse(fileContent);
+            } catch (localError) {
+                console.warn(`Local file ${filename} also not found.`);
+                return null;
+            }
+        }
     } catch (error) {
-        console.error(`Error reading ${filename}:`, error);
-        return null; // Handle error gracefully
+        console.error(`Error reading ${filename} from DB:`, error);
+        return null;
     }
 }
 
 export async function saveData(filename: string, data: any) {
     try {
-        const filePath = path.join(DATA_DIR, filename);
-        await fs.writeFile(filePath, JSON.stringify(data, null, 4), 'utf-8');
+        const docId = filename.replace('.json', '');
+        const docRef = doc(db, "content", docId);
+        await setDoc(docRef, { data }, { merge: true });
         return { success: true };
     } catch (error) {
-        console.error(`Error writing ${filename}:`, error);
+        console.error(`Error writing ${filename} to DB:`, error);
         return { success: false, error: 'Failed to save data' };
     }
 }
