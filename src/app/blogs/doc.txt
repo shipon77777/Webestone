@@ -1,0 +1,65 @@
+import { notFound } from "next/navigation";
+import { blogPosts } from "@/data/blogData";
+import { ArrowLeft, Calendar, User, Clock, Share2, Facebook, Twitter, Linkedin, Link as LinkIcon, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Metadata } from "next";
+
+// --- Types ---
+type Props = {
+    params: Promise<{ id: string }>;
+};
+
+// --- Metadata ---
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { id } = await params;
+    const post = blogPosts.find((p) => p.id === id);
+
+    if (!post) {
+        return {
+            title: "Post Not Found",
+        };
+    }
+
+    return {
+        title: `${post.title} | Webestone Blog`,
+        description: post.excerpt,
+    };
+}
+
+// --- Static Params for SSG ---
+export async function generateStaticParams() {
+    return blogPosts.map((post) => ({
+        id: post.id,
+    }));
+}
+
+// --- Client Components Logic (wrapped in simple functional components for now or just standard server component with client islands if needed) ---
+// Since this is a server component, I'll need to use a client component for the scroll progress or interactions if I want them.
+// But valid strategy: Keep this server component for SEO and fetch data, and import a Client Component for the rich UI.
+// For simplicity in this file, I'll make the whole page generic or use a client wrapper if needed.
+// Actually, let's keep it simple. I will just make it a Server Component and add a Client Component for the "trick" parts (like scroll progress).
+// Wait, to use `framer-motion` for entrance, I need "use client".
+// I'll make the whole page "use client" for the rich animations, but I lose `generateMetadata` unless I split it.
+// Next.js allows `generateMetadata` in server component and the default export can be client if defined in a separate file, OR I can just make this a Server Component and import a Client Component "BlogPostContent".
+
+// Let's go with the single file "use client" approach for the UI, but I want metadata.
+// So:
+// 1. `page.tsx` (Server) -> Fetches data, handles metadata.
+// 2. `BlogPostContent.tsx` (Client) -> The rich UI.
+
+// I'll define `BlogPostContent` in the same file but it's tricky with 'use client' directive. 
+// I will just make `src/app/blogs/[id]/page.tsx` a Server Component and create a small local client component if needed? 
+// No, simpler: Make `src/app/blogs/[id]/BlogPostContent.tsx` separately?
+// Or just inline the client logic? No, cannot mix.
+
+// Decision: I'll make `src/app/blogs/[id]/page.tsx` a Server Component that passes data to `src/app/blogs/[id]/ClientPage.tsx`.
+
+// But first, let's just make one file `page.tsx` and if I really need metadata I can export it.
+// Wait, `generateMetadata` works in Server Components. If I put `use client` at the top, it becomes a Client Component and `generateMetadata` is NOT supported in the same file usually (in older versions, but in 13+ it might be tricky).
+// Actually, `generateMetadata` can only be exported from a Server Component.
+// So, I WILL split it.
+
+// Step 1: Create `src/app/blogs/[id]/ClientPage.tsx` for the UI.
+// Step 2: Create `src/app/blogs/[id]/page.tsx` for the Server logic.
+
+// Let's create the Client Page first.
