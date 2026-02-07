@@ -1,0 +1,24 @@
+{
+    "digital-marketing": {
+        "h1": "Your digital dreams are just one team away...",
+        "h1Highlight": "one team away...",
+        "metaTitle": "Digital Marketing Services - WeBestOne",
+        "metaDescription": "High-end digital marketing services including SEO, PPC, and Social Media.",
+        "subheadline": "Building tomorrow's trends today",
+        "description": "Digital marketing is a vast landscape, but our agency of techie wizards has combined decades of experience and a deep understanding of how to make your business grow.",
+        "whyTitle": "Why should you use digital marketing services?",
+        "whyContent": "Today’s digital marketing services are AI driven which means smarter targeting, personalized messaging, and faster optimization.",
+        "ctaTitle": "Let's move your digital strategy forward"
+    },
+    "seo": {
+        "h1": "Dominate Search Results with AI-Driven SEO",
+        "h1Highlight": "AI-Driven SEO",
+        "metaTitle": "SEO Services - WeBestOne",
+        "metaDescription": "Professional SEO services to boost your organic visibility.",
+        "subheadline": "The Future of Search is Here",
+        "description": "Our SEO strategies are built for the modern web, where AI search and traditional search collide.",
+        "whyTitle": "Why is SEO crucial for your brand?",
+        "whyContent": "Without visibility, your brand doesn't exist. Our SEO services ensure you are found by the right people at the right time.",
+        "ctaTitle": "Let's scale your organic growth"
+    }
+}

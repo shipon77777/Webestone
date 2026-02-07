@@ -1,0 +1,122 @@
+[
+    {
+        "id": "1",
+        "title": "Digital Marketing",
+        "description": "Full-service digital marketing strategies including SEO, PPC, and Social Media to grow your brand online.",
+        "iconName": "Megaphone",
+        "color": "text-rose-500",
+        "href": "/services/digital-marketing"
+    },
+    {
+        "id": "2",
+        "title": "Search Engine Optimization (SEO)",
+        "description": "Strategic optimization that pushes you above competitors and attracts customers who are ready to take action.",
+        "iconName": "Search",
+        "color": "text-orange-400",
+        "href": "/services/seo"
+    },
+    {
+        "id": "3",
+        "title": "Social Media Marketing",
+        "description": "Story-driven campaigns that turn followers into engaged communities and engaged communities into loyal customers.",
+        "iconName": "Share2",
+        "color": "text-blue-400",
+        "href": "/services/social-media-marketing"
+    },
+    {
+        "id": "4",
+        "title": "Pay Per Click Advertising (PPC)",
+        "description": "High-intent ad targeting that brings the right audience to your door and converts clicks into revenue.",
+        "iconName": "MousePointerClick",
+        "color": "text-yellow-400",
+        "href": "/services/ppc"
+    },
+    {
+        "id": "5",
+        "title": "Video Editing",
+        "description": "Cinematic visual content that captures attention instantly and keeps viewers connected to your brand.",
+        "iconName": "MonitorPlay",
+        "color": "text-pink-400",
+        "href": "/services/video-editing"
+    },
+    {
+        "id": "6",
+        "title": "Motion Graphics",
+        "description": "Modern animations that simplify your message and make your brand impossible to ignore.",
+        "iconName": "Mountain",
+        "color": "text-purple-400",
+        "href": "/services/motion-graphics"
+    },
+    {
+        "id": "7",
+        "title": "UI and UX Design",
+        "description": "User-focused designs that reduce friction, guide behavior, and increase conversions effortlessly.",
+        "iconName": "PenTool",
+        "color": "text-orange-300",
+        "href": "/services/ui-ux-design"
+    },
+    {
+        "id": "8",
+        "title": "Web Development",
+        "description": "Fast, responsive websites built to impress instantly and convert consistently.",
+        "iconName": "Zap",
+        "color": "text-yellow-600",
+        "href": "/services/web-development"
+    },
+    {
+        "id": "9",
+        "title": "Interior and Exterior Design",
+        "description": "Thoughtful spatial design that reflects your brand identity and shapes meaningful customer experiences.",
+        "iconName": "Home",
+        "color": "text-indigo-400",
+        "href": "/services/interior-design"
+    },
+    {
+        "id": "10",
+        "title": "Shopify SEO",
+        "description": "Store optimization that helps shoppers find your products faster and encourages confident repeat purchases.",
+        "iconName": "Globe",
+        "color": "text-green-400",
+        "href": "/services/shopify-seo"
+    },
+    {
+        "id": "11",
+        "title": "Content Writing",
+        "description": "Clear, persuasive copy that communicates your value and inspires customers to take the next step.",
+        "iconName": "Edit3",
+        "color": "text-red-300",
+        "href": "/services/content-writing"
+    },
+    {
+        "id": "12",
+        "title": "App Design",
+        "description": "Intuitive interfaces that keep users engaged, satisfied, and excited to return.",
+        "iconName": "Gamepad2",
+        "color": "text-purple-500",
+        "href": "/services/app-design"
+    },
+    {
+        "id": "13",
+        "title": "AI Driven Digital Solutions",
+        "description": "Smart automated systems that increase efficiency and turn data into predictable business growth.",
+        "iconName": "Bot",
+        "color": "text-cyan-400",
+        "href": "/services/ai-solutions"
+    },
+    {
+        "id": "14",
+        "title": "New Service",
+        "description": "",
+        "iconName": "Search",
+        "color": "text-white",
+        "href": "#"
+    },
+    {
+        "id": "15",
+        "title": "New Service",
+        "description": "",
+        "iconName": "Search",
+        "color": "text-white",
+        "href": "#"
+    }
+]
