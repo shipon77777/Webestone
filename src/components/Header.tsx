@@ -129,6 +129,7 @@ export default function Header() {
                 <button
                     className="md:hidden text-neutral-300 hover:text-white"
                     onClick={() => setIsOpen(!isOpen)}
+                    aria-label="Toggle menu"
                 >
                     {isOpen ? <X /> : <Menu />}
                 </button>

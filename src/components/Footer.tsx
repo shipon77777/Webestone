@@ -78,6 +78,7 @@ export default function Footer() {
                                     style={{ border: 0, filter: 'grayscale(100%) invert(90%) hue-rotate(180deg)' }}
                                     className="group-hover/map:filter-none transition-all duration-700 scale-110 group-hover/map:scale-100"
                                     loading="lazy"
+                                    title="Google Maps Location"
                                 ></iframe>
                                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none z-20"></div>
                             </div>
@@ -121,11 +122,11 @@ export default function Footer() {
                         <div className="space-y-6">
                             <h3 className="text-white font-bold text-lg">Get in Touch</h3>
                             <div className="flex items-center gap-4">
-                                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 hover:scale-110 transition-transform"><Facebook className="w-5 h-5 fill-current" /></a>
-                                <a href={socials.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Instagram className="w-5 h-5" /></a>
-                                <a href={socials.whatsapp.startsWith('http') ? socials.whatsapp : `https://wa.me/${socials.whatsapp}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><MessageCircle className="w-5 h-5 fill-current" /></a>
-                                <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Linkedin className="w-5 h-5 fill-current" /></a>
-                                <a href={socials.youtube} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Youtube className="w-5 h-5 fill-current" /></a>
+                                <Link href={socials.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-600 hover:scale-110 transition-transform"><Facebook className="w-5 h-5 fill-current" /></Link>
+                                <Link href={socials.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Instagram className="w-5 h-5" /></Link>
+                                <Link href={socials.whatsapp.startsWith('http') ? socials.whatsapp : `https://wa.me/${socials.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><MessageCircle className="w-5 h-5 fill-current" /></Link>
+                                <Link href={socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Linkedin className="w-5 h-5 fill-current" /></Link>
+                                <Link href={socials.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"><Youtube className="w-5 h-5 fill-current" /></Link>
                             </div>
                         </div>
 
@@ -136,7 +137,7 @@ export default function Footer() {
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <div className="flex flex-col text-left leading-none">
-                                    <span className="text-[10px] uppercase opacity-70">Contact us on</span>
+                                    <span className="text-[10px] uppercase font-bold text-blue-950">Contact us on</span>
                                     <span className="text-xl">Email</span>
                                 </div>
                             </a>

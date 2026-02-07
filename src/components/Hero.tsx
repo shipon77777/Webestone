@@ -11,14 +11,19 @@ export default function Hero() {
         show: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.3,
+                staggerChildren: 0.05,
+                delayChildren: 0,
             },
         },
     };
 
     const item = {
         hidden: { y: 20, opacity: 0 },
+        show: { y: 0, opacity: 1, transition: { type: "spring" as const, stiffness: 50, damping: 20 } },
+    };
+
+    const lcpItem = {
+        hidden: { y: 20, opacity: 1 },
         show: { y: 0, opacity: 1, transition: { type: "spring" as const, stiffness: 50, damping: 20 } },
     };
 
@@ -38,7 +43,7 @@ export default function Hero() {
                     </motion.div>
 
                     <motion.h1
-                        variants={item}
+                        variants={lcpItem}
                         className="text-5xl md:text-7xl font-bold tracking-tight pb-2 text-white leading-[1.1]"
                     >
                         Your guide in{" "}
@@ -48,7 +53,7 @@ export default function Hero() {
                     </motion.h1>
 
                     <motion.p
-                        variants={item}
+                        variants={lcpItem}
                         className="text-lg text-neutral-400 max-w-xl leading-relaxed"
                     >
                         Your brand does not need just another post. It needs attention, engagement, and conversions. At WeBestOne, we combine creativity, data, and artificial intelligence to turn ideas into measurable business growth. From design and marketing to intelligent automation, every solution we create is made to stand out, perform, and succeed.
