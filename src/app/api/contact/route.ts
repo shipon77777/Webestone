@@ -11,12 +11,13 @@ export async function POST(req: Request) {
         }
 
         // Configure Nodemailer transporter
-        // Ideally use environment variables for sensitive data
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true, // use SSL
             auth: {
-                user: process.env.EMAIL_USER, // e.g. 'your-email@gmail.com'
-                pass: process.env.EMAIL_PASS, // e.g. 'your-app-password'
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
             },
         });
 
