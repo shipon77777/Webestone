@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import Footer from "@/components/Footer";
+import WhatsAppChat from "@/components/WhatsAppChat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <WhatsAppChat />
       </body>
     </html>
   );

@@ -20,6 +20,8 @@ export default function AdminPage() {
     const [socials, setSocials] = useState<any>({});
     const [site, setSite] = useState<any>({});
     const [servicePages, setServicePages] = useState<any>({});
+    const [contactInfo, setContactInfo] = useState<any>({});
+    const [teamMembers, setTeamMembers] = useState<any[]>([]);
     const [selectedServiceSlug, setSelectedServiceSlug] = useState("");
 
     // Blog States
@@ -83,12 +85,14 @@ export default function AdminPage() {
         const soc = await getData("socials.json");
         const si = await getData("site.json");
         const sp = await getData("service-pages.json");
+        const c = await getData("contact.json");
+        const t = await getData("team.json");
         const bp = await getBlogPosts();
 
         if (s) {
             setServices(s);
+            if (iconNameCorrection(s)) { /* Optional fix for icon names if needed later */ }
             if (s.length > 0) {
-                // Set initial selection if not set
                 const firstSlug = s[0].href.split('/').pop() || "";
                 setSelectedServiceSlug(firstSlug);
             }
@@ -97,31 +101,36 @@ export default function AdminPage() {
         if (soc) setSocials(soc);
         if (si) setSite(si);
         if (sp) setServicePages(sp);
+        if (c) setContactInfo(c);
+        if (t) setTeamMembers(t);
         if (bp) setBlogPosts(bp);
         setLoading(false);
     };
 
+    // Helper to fix icon names if needed
+    const iconNameCorrection = (services: any[]) => {
+        return false;
+    };
+
     const handleSaveBlogPost = async (post: any) => {
         if (post.id) {
-            // Update
             const { id, ...data } = post;
             const res = await updateBlogPost(id, data);
             if (res.success) {
                 alert("Blog post updated!");
                 setIsBlogModalOpen(false);
                 setEditingPost(null);
-                fetchData(); // Refresh list
+                fetchData();
             } else {
                 alert("Failed to update post: " + res.error);
             }
         } else {
-            // Create
             const res = await saveBlogPost(post);
             if (res.success) {
                 alert("Blog post created!");
                 setIsBlogModalOpen(false);
                 setEditingPost(null);
-                fetchData(); // Refresh list
+                fetchData();
             } else {
                 alert("Failed to create post: " + res.error);
             }
@@ -164,6 +173,16 @@ export default function AdminPage() {
         alert("Service page content saved!");
     };
 
+    const handleSaveContact = async () => {
+        await saveData("contact.json", contactInfo);
+        alert("Contact info saved!");
+    };
+
+    const handleSaveTeam = async () => {
+        await saveData("team.json", teamMembers);
+        alert("Team members saved!");
+    };
+
     const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -200,6 +219,28 @@ export default function AdminPage() {
         setUploading(false);
     };
 
+    // --- Team Image Upload ---
+    const handleTeamImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const result = await uploadFile(formData);
+        if (result.success) {
+            const updatedTeam = [...teamMembers];
+            updatedTeam[index].image = result.url;
+            setTeamMembers(updatedTeam);
+            alert("Image uploaded! Don't forget to save.");
+        } else {
+            alert("Upload failed: " + result.error);
+        }
+        setUploading(false);
+    };
+
+
     const addService = () => {
         const newId = (Math.max(...services.map((s: any) => parseInt(s.id) || 0)) + 1).toString();
         setServices([...services, { id: newId, title: "New Service", description: "", iconName: "Search", color: "text-white", href: "#" }]);
@@ -215,6 +256,22 @@ export default function AdminPage() {
         const newServices = [...services];
         newServices[index] = { ...newServices[index], [field]: value };
         setServices(newServices);
+    };
+
+    const addTeamMember = () => {
+        setTeamMembers([...teamMembers, { name: "New Member", role: "Role", image: "", color: "from-blue-500 to-cyan-500" }]);
+    };
+
+    const removeTeamMember = (index: number) => {
+        const updated = [...teamMembers];
+        updated.splice(index, 1);
+        setTeamMembers(updated);
+    };
+
+    const updateTeamMember = (index: number, field: string, value: string) => {
+        const updated = [...teamMembers];
+        updated[index] = { ...updated[index], [field]: value };
+        setTeamMembers(updated);
     };
 
     if (!isAuthenticated) {
@@ -287,6 +344,8 @@ export default function AdminPage() {
                 <button onClick={() => setActiveTab("seo")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "seo" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Service Pages (SEO)</button>
                 <button onClick={() => setActiveTab("video")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "video" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Video</button>
                 <button onClick={() => setActiveTab("socials")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "socials" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Socials</button>
+                <button onClick={() => setActiveTab("contact")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "contact" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Contact Info</button>
+                <button onClick={() => setActiveTab("team")} className={`px-4 py-2 rounded whitespace-nowrap ${activeTab === "team" ? "bg-neon-green text-black" : "bg-neutral-800"}`}>Team Members</button>
             </div>
 
             {/* General Tab */}
@@ -547,6 +606,82 @@ export default function AdminPage() {
                     <button onClick={handleSaveSocials} className="flex items-center gap-2 bg-neon-green text-black font-bold px-6 py-3 rounded hover:bg-green-400"><Save size={20} /> Save Socials</button>
                 </div>
             )}
+
+            {/* Contact Info Tab */}
+            {activeTab === "contact" && (
+                <div className="space-y-6 max-w-2xl">
+                    <h2 className="text-2xl font-bold">Contact Information</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm text-neutral-400 mb-1">Email Address</label>
+                            <input value={contactInfo.email || ""} onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })} className="w-full bg-neutral-900 border border-white/20 p-3 rounded" placeholder="hello@webestone.com" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-neutral-400 mb-1">Phone Number</label>
+                            <input value={contactInfo.phone || ""} onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })} className="w-full bg-neutral-900 border border-white/20 p-3 rounded" placeholder="+1 (234) 567-890" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-neutral-400 mb-1">Display Phone (Formatted)</label>
+                            <input value={contactInfo.displayPhone || ""} onChange={(e) => setContactInfo({ ...contactInfo, displayPhone: e.target.value })} className="w-full bg-neutral-900 border border-white/20 p-3 rounded" placeholder="+1 234 567 890" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-neutral-400 mb-1">Address Line 1</label>
+                            <input value={contactInfo.address1 || ""} onChange={(e) => setContactInfo({ ...contactInfo, address1: e.target.value })} className="w-full bg-neutral-900 border border-white/20 p-3 rounded" placeholder="123 Innovation Blvd" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-neutral-400 mb-1">Address Line 2</label>
+                            <input value={contactInfo.address2 || ""} onChange={(e) => setContactInfo({ ...contactInfo, address2: e.target.value })} className="w-full bg-neutral-900 border border-white/20 p-3 rounded" placeholder="Tech City, TC 90210" />
+                        </div>
+                        <div>
+                            <label className="block text-sm text-neutral-400 mb-1">Google Maps Link</label>
+                            <input value={contactInfo.mapLink || ""} onChange={(e) => setContactInfo({ ...contactInfo, mapLink: e.target.value })} className="w-full bg-neutral-900 border border-white/20 p-3 rounded" placeholder="https://maps.google.com/..." />
+                        </div>
+                    </div>
+                    <button onClick={handleSaveContact} className="flex items-center gap-2 bg-neon-green text-black font-bold px-6 py-3 rounded hover:bg-green-400"><Save size={20} /> Save Contact Info</button>
+                </div>
+            )}
+
+            {/* Team Members Tab */}
+            {activeTab === "team" && (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold">Manage Team Members</h2>
+                        <button onClick={addTeamMember} className="flex items-center gap-2 bg-blue-600 px-4 py-2 rounded hover:bg-blue-500"><Plus size={16} /> Add Member</button>
+                    </div>
+                    <div className="grid gap-6">
+                        {teamMembers.map((member, i) => (
+                            <div key={i} className="bg-neutral-900 p-6 rounded-xl border border-white/10 space-y-4">
+                                <div className="flex justify-between">
+                                    <h3 className="font-bold text-lg">Member #{i + 1}</h3>
+                                    <button onClick={() => removeTeamMember(i)} className="text-red-500 hover:text-red-400"><Trash size={18} /></button>
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <input placeholder="Name" value={member.name} onChange={(e) => updateTeamMember(i, "name", e.target.value)} className="bg-black border border-white/20 p-2 rounded" />
+                                    <input placeholder="Role" value={member.role} onChange={(e) => updateTeamMember(i, "role", e.target.value)} className="bg-black border border-white/20 p-2 rounded" />
+                                    <input placeholder="Color Gradient (Tailwind)" value={member.color} onChange={(e) => updateTeamMember(i, "color", e.target.value)} className="bg-black border border-white/20 p-2 rounded" />
+
+                                    <div className="flex items-center gap-2 col-span-2 md:col-span-1">
+                                        <input placeholder="Image URL" value={member.image} onChange={(e) => updateTeamMember(i, "image", e.target.value)} className="flex-1 bg-black border border-white/20 p-2 rounded" />
+
+                                        <label className="cursor-pointer bg-white/10 p-2 rounded hover:bg-white/20 transition-colors">
+                                            <Upload size={16} />
+                                            <input type="file" className="hidden" accept="image/*" onChange={(e) => handleTeamImageUpload(e, i)} disabled={uploading} />
+                                        </label>
+                                    </div>
+
+                                </div>
+                                {member.image && (
+                                    <div className="w-20 h-20 rounded-full overflow-hidden border border-white/10">
+                                        <img src={member.image} alt="Preview" className="w-full h-full object-cover" />
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={handleSaveTeam} className="flex items-center gap-2 bg-neon-green text-black font-bold px-6 py-3 rounded-full hover:bg-green-400 fixed bottom-8 right-8 shadow-lg"><Save size={20} /> Save Changes</button>
+                </div>
+            )}
+
 
             {/* Blog Tab */}
             {activeTab === "blog" && (

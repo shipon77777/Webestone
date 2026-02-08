@@ -3,8 +3,9 @@
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionValue } from "framer-motion";
 import { Users, Target, Zap, Award, Megaphone, CheckCircle2, ArrowRight, Play, Globe, Shield, Rocket } from "lucide-react";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { getData } from "@/actions/admin";
 
 const stats = [
     { label: "Global Clients", value: "50+", icon: Globe },
@@ -19,7 +20,8 @@ const values = [
     { title: "Excellence", desc: "We are committed to delivering nothing short of perfection in every pixel.", icon: Award, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
 ];
 
-const teamMembers = [
+// Fallback data
+const defaultTeamMembers = [
     { name: "Alex Morgan", role: "CEO & Founder", color: "from-blue-500 to-cyan-500" },
     { name: "Sarah Chen", role: "CTO", color: "from-purple-500 to-pink-500" },
     { name: "Michael Ross", role: "Head of Marketing", color: "from-orange-500 to-red-500" },
@@ -58,6 +60,17 @@ export default function About() {
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({ target: containerRef });
     const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+    const [teamMembers, setTeamMembers] = useState<any[]>(defaultTeamMembers);
+
+    useEffect(() => {
+        const fetchTeam = async () => {
+            const data = await getData("team.json");
+            if (data && Array.isArray(data) && data.length > 0) {
+                setTeamMembers(data);
+            }
+        };
+        fetchTeam();
+    }, []);
 
     return (
         <main ref={containerRef} className="relative min-h-screen bg-black text-white overflow-hidden selection:bg-neon-green/30">
@@ -287,15 +300,22 @@ export default function About() {
                                 className="group relative h-[400px] rounded-[2rem] overflow-hidden cursor-pointer"
                             >
                                 {/* Background Gradient Placeholder */}
-                                <div className={`absolute inset-0 bg-gradient-to-br ${member.color} opacity-60 group-hover:opacity-80 transition-opacity duration-500`}></div>
+                                <div className={`absolute inset-0 bg-gradient-to-br ${member.color || "from-blue-500 to-cyan-500"} opacity-60 group-hover:opacity-80 transition-opacity duration-500`}></div>
 
                                 {/* Image Placeholder Visuals */}
                                 <div className="absolute inset-0 opacity-30 bg-[url('/grid.svg')] mix-blend-overlay"></div>
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 backdrop-blur-sm">
-                                        <Users className="w-12 h-12 text-white/50" />
+
+                                {member.image ? (
+                                    <div className="absolute inset-0">
+                                        <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100 mix-blend-overlay group-hover:mix-blend-normal" />
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="w-32 h-32 rounded-full border-2 border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 backdrop-blur-sm">
+                                            <Users className="w-12 h-12 text-white/50" />
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Content Overlay */}
                                 <div className="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black via-black/40 to-transparent translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
